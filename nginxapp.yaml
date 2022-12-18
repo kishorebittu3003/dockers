@@ -17,7 +17,7 @@ spec:
       name: nginx
       labels:
         app: nginx
-        env: devgit add 
+        env: dev
     spec: 
       containers:
         - name: nginx1 
