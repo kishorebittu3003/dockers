@@ -1,0 +1,40 @@
+---
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: httpd
+  labels:
+    app: httpd  
+spec:
+  minReadySeconds: 2
+  replicas: 4
+  selector:
+    matchExpressions:
+      - key: app
+        operator: In 
+        values: 
+          - httpd
+      - key: ver
+        operator: Exists
+  template:
+    metadata:
+      name: httpd
+      labels:
+        app: httpd
+        ver: "2.4"      
+    spec:
+      restartPolicy: never
+      containers:
+        - name: httpd
+          image: httpd:2.4
+          ports:
+            - containerPort: 80
+              protocol: TCP 
+        - name: jenkins
+          image: jenkins/jenkins:lts-jdk11
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+
+                          
+      
