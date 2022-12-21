@@ -1,0 +1,27 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springcloud
+  labels: 
+    app: springcloud/spring-pipeline-m2
+    ver: "0.0.5"
+spec: 
+  minReadySeconds: 5
+  replicas: 3
+  selector:
+    matchLabels:
+      app: springcloud/spring-pipeline-m2
+      ver: "0.0.5"
+  template:
+    metadata:
+      name: springboot
+      labels: 
+        app: springcloud/spring-pipeline-m2
+        ver: "0.0.5" 
+    spec:
+      containers:
+        - image: springcloud/spring-pipeline-m2:0.0.5
+          ports:
+            - containerPort: 8080
+              protocol: TCP       
