@@ -1,0 +1,71 @@
+---
+apiVersion: v1 
+kind: PersistentVolumeClaim
+metadata:
+  name: bittuclaim
+  labels: 
+    purpose: pvc
+spec:
+  # selector: 
+  #   key: app
+  #   operator: In
+  #   values: Exists
+  accessModes: 
+    - ReadWriteOnce
+  storageClassName: gp2
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: Pod
+metadata: 
+  name: podvolume
+spec: 
+  containers:
+    - image: mysql:8.0-debian
+      name: podvolume
+      ports:
+        - containerPort: 3306
+          name: podvolume
+          protocol: TCP
+      env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: QTDEVOPS
+        - name: MYSQL_DATABASE
+          value: QTDEVOPS  
+        - name: MYSQL_USER 
+          value: QTDEVOPS
+        - name: MYSQL_PASSWORD
+          value: QTDEVOPS  
+      volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: podvolume
+  volumes: 
+    - persistentVolumeClaim: 
+        claimName: bittuclaim
+        readOnly: true
+      name: podvolume          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                       
