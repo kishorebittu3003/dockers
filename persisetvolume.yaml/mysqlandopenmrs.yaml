@@ -1,0 +1,108 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: deploymentmysql
+spec: 
+  minReadySeconds: 5
+  replicas: 3
+  selector:
+    matchLabels:
+      app: mysql
+      ver: 8.0-debian
+  strategy:
+    type: RollingUpdate
+    rollingUpdate: 
+      maxSurge: 25%
+      maxUnavailable: 25%     
+  template: 
+    metadata:
+      name: deployment
+      labels: 
+        app: mysql
+        ver: 8.0-debian
+    spec: 
+      containers:
+        - image: mysql:8.0-debian
+          name: mysql
+          ports:
+            - containerPort: 3306
+              name: mysql
+              protocol: TCP
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: QTDEVOPS
+            - name: MYSQL_DATABASE
+              value: QTDEVOPS  
+            - name: MYSQL_USER 
+              value: QTDEVOPS
+            - name: MYSQL_PASSWORD
+              value: QTDEVOPS 
+            - name: MYSQL_SERVER
+              VALUE: deploymentmysql  
+              
+      #     volumeMounts:
+      #       - mountPath: /var/lib/mysql
+      #         name: mysqlvolume
+      #         readOnly: true
+      # volumes:
+      #   - persistentVolumeClaim: 
+      #       claimName: bittuclaim
+      #       name: mysqlvolume 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: servicefor
+  labels: 
+    app: nginx
+    env: dev
+spec: 
+  type: LoadBalancer
+  selector: 
+    app: nginx
+    ver: "1.23"
+  ports:
+    - name: nginxwebport
+      port: 3562
+      targetPort: 80
+      protocol: TCP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: nginx
+  labels: 
+    app: nginx
+    env: dev
+spec:
+  minReadySeconds: 2
+  replicas: 4
+  selector:
+    matchLabels:
+      app: nginx
+      env: dev
+  strategy:
+    type: RollingUpdate
+    rollingUpdate: 
+      maxSurge: 25%
+      maxUnavailable: 25%     
+  template: 
+    metadata: 
+      name: nginx
+      labels:
+        app: nginx
+        env: dev
+    spec: 
+      containers:
+        - name: nginx1 
+          image: nginx:1.23
+          ports: 
+            - containerPort: 80
+              name: fornginx
+              protocol: TCP
+          env:
+            - name: MYSQL_SERVER
+              value: deploymentmysql
+             
+           
