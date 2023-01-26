@@ -23,3 +23,35 @@ spec:
           ports:
             - containerPort: 8080
               protocol: TCP
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment
+  labels:
+    app: openmrs 
+spec:
+  minReadySeconds: 5
+  replicas: 3
+  selector:
+    matchLabels:
+      app: openmrs 
+  strategy:
+    type: RollingUpdate
+    rollingUpdate: 
+      maxSurge: 25%
+      maxUnavailable: 25%    
+  template:
+    metadata:
+      labels:
+        app: mrs 
+      name: mrs 
+    spec:
+      containers:
+        - image: kishorekumar3003/mrs
+          name: mrs 
+          ports:
+            - containerPort: 8000
+              protocol: TCP             
